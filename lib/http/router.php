@@ -3,8 +3,6 @@ namespace http;
 use http\route\Collection as RouteCollection;
 use http\route\Scope as RouteScope;
 
-if(function_exists('import')) import('http', 'inflector');
-
 spl_autoload_register(function($class) {
   $underscored_class = preg_replace('/(\p{Ll})(\p{Lu})/', '$1_$2', $class);
   $file = __DIR__."/../".str_replace('\\', '/', strtolower($underscored_class)).".php";
