@@ -88,7 +88,7 @@ class Acceptor extends Object {
    * @return boolean
    */
   protected function accept_pattern($route, $request) {
-    $path = (string)$request->path_info();
+    $path = $request->resource_path();
     
     if(strlen($path) > 0) {
       if(strlen($path) !== 1) $path = rtrim($path, '/');
