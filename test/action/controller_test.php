@@ -108,7 +108,7 @@ class ControllerTest extends \test_case\Unit {
     $controller->process_transaction(new Request('get', 'http://domain.de?_action=index'));
     $this->assert_false($controller->accept_format('xml'));
     
-    $controller->process_transaction(new Request('get', 'http://domain.de?_action=index', array(), ['accept' => 'text/xml']));
+    $controller->process_transaction(new Request('get', 'http://domain.de?_action=index', array(), array('accept' => 'text/xml')));
     $this->assert_true($controller->accept_format('xml'));
   }
   
@@ -117,7 +117,7 @@ class ControllerTest extends \test_case\Unit {
     $response = $controller->process_transaction(new Request('get', 'http://domain.de?_action=index'));
     $this->assert_empty($response->flat_body());
     
-    $response = $controller->process_transaction(new Request('get', 'http://domain.de?_action=index', array(), ['accept' => 'text/xml']));
+    $response = $controller->process_transaction(new Request('get', 'http://domain.de?_action=index', array(), array('accept' => 'text/xml')));
     $this->assert_eq($response->flat_body(), "<data></data>");
   }
   
@@ -126,11 +126,11 @@ class ControllerTest extends \test_case\Unit {
     $response = $controller->process_transaction(new Request('get', 'http://domain.de?_action=respond_many'));
     $this->assert_empty($response->flat_body());
     
-    $response = $controller->process_transaction(new Request('get', 'http://domain.de?_action=respond_many', array(), ['accept' => 'text/xml']));
+    $response = $controller->process_transaction(new Request('get', 'http://domain.de?_action=respond_many', array(), array('accept' => 'text/xml')));
     $this->assert_eq($response->flat_body(), '<nodes></nodes>');
     $this->assert_eq($response['content_type'], 'text/xml');
     
-    $response = $controller->process_transaction(new Request('get', 'http://domain.de?_action=respond_many', array(), ['accept' => 'text/javascript']));
+    $response = $controller->process_transaction(new Request('get', 'http://domain.de?_action=respond_many', array(), array('accept' => 'text/javascript')));
     $this->assert_eq($response->flat_body(), "function alertSomehting() { alert('something'); }");
   }
   

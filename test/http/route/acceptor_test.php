@@ -123,7 +123,7 @@ class AcceptorTest extends TestCase {
   }
   
   function test_acception_with_requirements() {
-    $route = new Route('get', '/foo/&id', [], ['id' => '/\d+/']);
+    $route = new Route('get', '/foo/&id', array(), array('id' => '/\d+/'));
     $this->assert_true_acception($route, new Request('get', 'http://example.de/index.php/foo/123'));
     $this->assert_false_acception($route, new Request('get', 'http://example.de/index.php/foo/asfag'));
   }

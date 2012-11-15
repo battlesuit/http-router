@@ -23,7 +23,8 @@ class ScopeTest extends TestCase {
   }
   
   function assert_eq_action_processor($index, $processor) {
-    $action = new TargetTransaction($this->scope->routes()[$index]->target);
+    $routes = $this->scope->routes();
+    $action = new TargetTransaction($routes[$index]->target);
     $action->compile(new Request());
     $this->assert_eq($action->processor(), $processor);
   }
@@ -74,11 +75,11 @@ class ScopeTest extends TestCase {
   }
   
   function test_match_via() {
-    $this->scope->match(['path' => '/users/&id', 'via' => 'post'], 'callback');
+    $this->scope->match(array('path' => '/users/&id', 'via' => 'post'), 'callback');
     
     $this->assert_accept(new Request('post', 'http://example.de/users/12'));
 
-    $this->scope->match(['/projects/&id', ['post', 'delete']], 'callback');
+    $this->scope->match(array('/projects/&id', array('post', 'delete')), 'callback');
     $this->assert_accept(new Request('delete', 'http://example.de/projects/12'));
     $this->assert_accept(new Request('post', 'http://example.de/projects/12'));
   }
@@ -102,7 +103,7 @@ class ScopeTest extends TestCase {
   }
   
   function test_match_with_targets_dir() {
-    $this->scope->match('/products/lamp', ['to' => 'products#view_lamp', 'targets_dir' => __DIR__.'/fixtures']);
+    $this->scope->match('/products/lamp', array('to' => 'products#view_lamp', 'targets_dir' => __DIR__.'/fixtures'));
   }
   
   function test_match_target_callback() {
@@ -110,11 +111,11 @@ class ScopeTest extends TestCase {
   }
   
   function test_match_target_callback_via_to_param() {
-    $this->scope->match('/foo/bar', ['to' => 'hello_world']);
+    $this->scope->match('/foo/bar', array('to' => 'hello_world'));
   }
   
   function test_match_by_index_array_conditions() {
-    $this->scope->match(['/foo/bar/&my_param', 'get', ['my_param' => '/\d+/']], ['to' => 'hello_world']);
+    $this->scope->match(array('/foo/bar/&my_param', 'get', array('my_param' => '/\d+/')), array('to' => 'hello_world'));
   }
 
   
@@ -132,8 +133,8 @@ class ScopeTest extends TestCase {
   
   function test_controller() {
     $this->scope->controller('products', function($products) {
-      $products->get('/add', ['action' => 'index']);
-      $products->post('/add', ['action' => 'create']);
+      $products->get('/add', array('action' => 'index'));
+      $products->post('/add', array('action' => 'create'));
     });
     
     $request = new Request('post', 'http://example.de/products/add');
@@ -180,19 +181,20 @@ class ScopeTest extends TestCase {
   }
   
   function test_under() {
-    $this->scope->under('\users\accounts', ['path' => '/tom'], function($scope) {
+    $this->scope->under('\users\accounts', array('path' => '/tom'), function($scope) {
       $scope->get('/foo', 'create');
     });
     
     $this->assert_accept_and_dispatch(new Request('get', 'http://example.de/tom/foo'), $action);
     
     
-    $this->assert_equality($action->target()['namespace'], 'users\accounts');
+    $target = $action->target();
+    $this->assert_equality($target['namespace'], 'users\accounts');
     $this->assert_equality($action->processor(), 'users\accounts\create');
   }
   
   function test_member() {
-    $this->scope->scope(['controller' => 'users'], function($scope) {
+    $this->scope->scope(array('controller' => 'users'), function($scope) {
       $scope->member(function($member) {
         $member->post('/action', 'target_function');
       });
@@ -207,7 +209,7 @@ class ScopeTest extends TestCase {
       $clients->member(function($member) {
         $member->controller('invoices', function($invoices) {
           $invoices->member(function($invoices_member) {
-            $invoices_member->get('/nested/path', ['action' => 'index']);
+            $invoices_member->get('/nested/path', array('action' => 'index'));
           });
         });
       });
@@ -220,28 +222,30 @@ class ScopeTest extends TestCase {
   }
   
   function test_alias() {
-    $this->scope->scope(['alias' => '%s_controller'], function($scope) {
+    $this->scope->scope(array('alias' => '%s_controller'), function($scope) {
       $scope->get('/foo/bar', 'users.accounts#index');
     });
     
     $this->scope->finalize();
-    $this->assert_eq($this->scope->routes()[0]->target['alias'], '%s_controller');
+    $routes = $this->scope->routes();
+    $this->assert_eq($routes[0]->target['alias'], '%s_controller');
     
     $this->assert_eq_action_processor(0, 'users\AccountsController::handle_transaction');
   }
   
   function test_alias_on_resource() {
-    $this->scope->scope(['alias' => '%s_controller'], function($scope) {
+    $this->scope->scope(array('alias' => '%s_controller'), function($scope) {
       $scope->resource('users');
     });
     
     $this->scope->finalize();
-    $this->assert_eq($this->scope->routes()[0]->target['alias'], '%s_controller');
+    $routes = $this->scope->routes();
+    $this->assert_eq($routes[0]->target['alias'], '%s_controller');
     $this->assert_eq_action_processor(0, 'UsersController::handle_transaction');
   }
   
   function test_alias_on_nested_resource() {
-    $this->scope->scope(['alias' => '%s_controller'], function($scope) {
+    $this->scope->scope(array('alias' => '%s_controller'), function($scope) {
       $scope('/path/to', function($nested) {
         $nested->resource('users');
       });
@@ -249,21 +253,23 @@ class ScopeTest extends TestCase {
     });
     
     $this->scope->finalize();
-    $this->assert_eq($this->scope->routes()[0]->target['alias'], '%s_controller');
+    $routes = $this->scope->routes();
+    $this->assert_eq($routes[0]->target['alias'], '%s_controller');
   }
   
   function test_load_dir() {
-    $this->scope->scope(['alias' => '%s_controller', 'load_dir' => __DIR__.'/controllers/dir'], function($scope) {
+    $this->scope->scope(array('alias' => '%s_controller', 'load_dir' => __DIR__.'/controllers/dir'), function($scope) {
       $scope->get('/foo/bar', 'users.accounts#index');
     });
     
     $this->scope->finalize();
-    $this->assert_eq($this->scope->routes()[0]->target['load_dir'], __DIR__.'/controllers/dir');
+    $routes = $this->scope->routes();
+    $this->assert_eq($routes[0]->target['load_dir'], __DIR__.'/controllers/dir');
     $this->assert_eq_action_processor(0, 'users\AccountsController::handle_transaction');
   }
   
   function test_scope_autoload() {
-    $this->scope->scope(['alias' => '%s_controller', 'load_dir' => $this->bench_dir(), 'namespace' => 'controllers'], function($scope) {
+    $this->scope->scope(array('alias' => '%s_controller', 'load_dir' => $this->bench_dir(), 'namespace' => 'controllers'), function($scope) {
       $scope->get('/foo/bar', 'application#index');
     });
     

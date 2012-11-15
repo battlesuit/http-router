@@ -16,48 +16,55 @@ class RouteTest extends TestCase {
   }
   
   function test_construction_with_method() {
-    $this->assert_eq((new Route('get'))->method(), 'get');
+    $route = new Route('get');
+    $this->assert_eq($route->method(), 'get');
   }
   
   function test_construction_with_uppercased_method() {
-    $this->assert_eq((new Route('POST'))->method(), 'post');
+    $route = new Route('POST');
+    $this->assert_eq($route->method(), 'post');
   }
   
   function test_construction_with_pattern() {
-    $this->assert_eq((new Route(null, '/foo/bar'))->pattern(), '/foo/bar');
+    $route = new Route(null, '/foo/bar');
+    $this->assert_eq($route->pattern(), '/foo/bar');
   }
   
   function test_construction_with_pattern_without_leading_slash() {
-    $this->assert_eq((new Route(null, 'foo/bar'))->pattern(), '/foo/bar');
+    $route = new Route(null, 'foo/bar');
+    $this->assert_eq($route->pattern(), '/foo/bar');
   }
   
   function test_construction_with_slash_as_pattern() {
-    $this->assert_eq((new Route(null, '/'))->pattern(), '/');
+    $route = new Route(null, '/');
+    $this->assert_eq($route->pattern(), '/');
   }
   
   function test_construction_with_target() {
-    $this->assert_eq((new Route(null, null, ['to' => 'function']))->target['to'], 'function');
+    $route = new Route(null, null, array('to' => 'function'));
+    $this->assert_eq($route->target['to'], 'function');
   }
   
   function test_construction_with_requirements() {
-    $this->assert_eq((new Route(null, null, [], ['name' => '/[a-z]+/']))->requirements['name'], '/[a-z]+/');
+    $route = new Route(null, null, array(), array('name' => '/[a-z]+/'));
+    $this->assert_eq($route->requirements['name'], '/[a-z]+/');
   }
   
   function test_to_array() {
-    $expectation = ['method' => 'get', 'pattern' => '/users/&id/edit', 'target' => ['to' => 'function'], 'requirements' => ['id' => '/\d+/']];
-    $route = new Route('get', '/users/&id/edit', ['to' => 'function'], ['id' => '/\d+/']);
+    $expectation = array('method' => 'get', 'pattern' => '/users/&id/edit', 'target' => array('to' => 'function'), 'requirements' => array('id' => '/\d+/'));
+    $route = new Route('get', '/users/&id/edit', array('to' => 'function'), array('id' => '/\d+/'));
     $this->assert_eq($route->to_array(), $expectation);
   }
   
   function test_to_string() {
     $expectation = 'GET /users/&id</\d+/> => show_user';
-    $route = new Route('get', '/users/&id', ['to' => 'show_user'], ['id' => '/\d+/']);
+    $route = new Route('get', '/users/&id', array('to' => 'show_user'), array('id' => '/\d+/'));
     $this->assert_eq("$route", $expectation);
   }
   
   function test_to_string_with_closure() {
     $expectation = 'DELETE /users/&id</\d+/>/foo/bar => [closure]';
-    $route = new Route('delete', '/users/&id/foo/bar', ['to' => function() {}], ['id' => '/\d+/']);
+    $route = new Route('delete', '/users/&id/foo/bar', array('to' => function() {}), array('id' => '/\d+/'));
     $this->assert_eq("$route", $expectation);
   }
   

@@ -1,7 +1,7 @@
 <?php
 namespace test_bench;
 
-class ControlTestBench extends Base {
+class PackageTestBench extends Base {
   function initialize() {
     $this->add_test(new \http\RouteTest());
     $this->add_test(new \http\route\AcceptorTest());
@@ -9,7 +9,6 @@ class ControlTestBench extends Base {
     $this->add_test(new \http\route\ScopeTest());
     $this->add_test(new \http\TargetTransactionTest());
     $this->add_test(new \http\TransactionControllerTest());
-    $this->add_test(new \action\ControllerTest());
   }
 }
 ?>

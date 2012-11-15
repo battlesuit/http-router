@@ -1,7 +1,7 @@
 <?php
 namespace controllers;
 
-class Users extends \action\Controller {
+class Users extends \http\action\Controller {
 
 }
 ?>

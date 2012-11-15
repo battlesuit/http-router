@@ -14,7 +14,7 @@ class RouterTest extends TestCase {
 
     $this->router->draw_routes(function($root) {
       $root->match('/foo', function() {
-        return [200, ['content_type' => 'text/html'], ['hello world']];
+        return array(200, array('content_type' => 'text/html'), array('hello world'));
       });
     });
     
@@ -43,7 +43,7 @@ class RouterTest extends TestCase {
   
   function test_match_by_index_array_conditions() {
     $this->router->draw_routes(function($root) {
-      $root->match(['/foo/bar/&my_param', 'get'], ['to' => 'hello_world'], ['my_param' => '/\d+/']);
+      $root->match(array('/foo/bar/&my_param', 'get'), array('to' => 'hello_world'), array('my_param' => '/\d+/'));
     });
     
     
