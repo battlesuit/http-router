@@ -72,7 +72,7 @@ class Router extends Object {
       return TargetTransaction::handle($route->target, $request);
     }
     
-    return new Response(404, "No routes matched ".strtoupper($request->method())." ".$request->path_info());
+    return new Response(404, "No routes matched ".strtoupper($request->method())." ".$request->resource_path());
   }
   
   /**

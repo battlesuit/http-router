@@ -66,7 +66,7 @@ class Route extends Object {
     $this->method = !empty($method) ? strtolower($method) : 'get';
     
     # add leading slash if missing
-    if($pattern !== '/' and $pattern[0] !== '/') $pattern = "/$pattern";
+    $pattern = "/".ltrim($pattern, '/');
     
     $this->target = $target;
     $this->pattern = $pattern;

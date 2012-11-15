@@ -66,7 +66,7 @@ class TargetTransaction extends Transaction {
              
         }
       }
-
+      
       $response = new Response(301);
       if(strpos($location, 'http://') !== false) {
         $response->location($location);

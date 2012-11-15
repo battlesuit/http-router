@@ -404,7 +404,9 @@ class Scope extends Object {
       $local_path .= "/&id";
     }
     
-    $conditions['path'] = $this->path.$local_path.$path;
+    $base_path = $this->path.$local_path;
+    
+    $conditions['path'] = $base_path.($path == '/' ? '' : $path);
     return $conditions;
   }
   
@@ -530,7 +532,6 @@ class Scope extends Object {
   function to_string() {
     return $this->routes->to_string();
   }
-
   
   /**
    * Reads and writes a local variable
