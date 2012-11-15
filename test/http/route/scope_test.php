@@ -283,5 +283,22 @@ class ScopeTest extends TestCase {
     $response = $action->process($request);
     $this->assert_eq("$response", "Index page");
   }
+  
+  function test_scope_with_requirements() {
+    $this->scope->scope(array('requirements' => array('bar' => '/(de|en)/')), function($scope) {
+      $scope->get('/foo/&bar', 'application#index');
+    });
+    
+    $this->scope->finalize();
+    $routes = $this->scope->routes();
+
+    $request = new Request('get', 'http://domain.foo/index.php/foo/asdasd');
+    $route = $this->scope->routes()->accept($request);
+    $this->assert_false($route);
+    
+    $request = new Request('get', 'http://domain.foo/index.php/foo/en');
+    $route = $this->scope->routes()->accept($request);
+    $this->assert_true(($route !== false));
+  }
 }
 ?>

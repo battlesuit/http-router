@@ -111,6 +111,10 @@ class Scope extends Object {
     $this->routes = !isset($routes) ? new Collection() : $routes;
     $this->block = $block;
     $this->locals = $locals;
+    
+    if(!empty($locals['requirements'])) {
+      $this->requirements = $locals['requirements'];
+    }
   }
   
   /**
@@ -224,6 +228,7 @@ class Scope extends Object {
     
     $scope->parents = $parents;
     $scope->depth = $this->depth+1;
+    $scope->requirements = array_merge($this->requirements, $scope->requirements);
     return $this->children[] = $scope;
   }
   
