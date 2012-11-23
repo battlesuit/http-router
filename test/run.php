@@ -1,9 +1,7 @@
 <?php
 namespace test_bench {
-  require_once '/../../suitcase.php';
-  \suitcase\import('test', 'http-router', 'http-action');
-  
-  require_once 'bench.php';
+  require '../init/test.php';
+  require 'bench.php';
   
   autoload_in('http', __DIR__."/http");
   
