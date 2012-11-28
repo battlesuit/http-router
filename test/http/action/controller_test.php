@@ -1,11 +1,11 @@
 <?php
-namespace action;
+namespace http\action;
 use http\Request;
 
-class ControllerTest extends \test_case\Unit {
+class ControllerTest extends \http\TestCase {
   function set_up() {
-    require_once "$this->bench_dir/controllers/users.php";
-    require_once "$this->bench_dir/controllers.php";
+    require_once $this->bench_dir()."/controllers/users.php";
+    require_once $this->bench_dir()."/controllers.php";
     $this->controller = new \controllers\Users();
   }
   
@@ -63,7 +63,7 @@ class ControllerTest extends \test_case\Unit {
   
   function test_default_content_type() {
     $response = $this->controller->process_transaction(new Request('get', 'http://domain.de?_action=trigger'));
-    $this->assert_eq($response['content_type'], 'text/html; charset=utf8');
+    $this->assert_eq($response['content_type'], 'text/html; charset=utf-8');
   }
   
   function test_request_reader() {

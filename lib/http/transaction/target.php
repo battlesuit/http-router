@@ -1,10 +1,8 @@
 <?php
-namespace http;
-use Inflector;
+namespace http\transaction;
+use http\Request;
 
-class InvalidTargetError extends Error {}
-
-class TargetTransaction extends Transaction {
+class Target extends Base {
   
   private static $autoloaders = array();
   
@@ -47,15 +45,6 @@ class TargetTransaction extends Transaction {
     return $this->target['to'];
   }
   
-  /**
-   * 
-   * 
-   */
-  static function handle($target, Request $request) {
-    $transaction = new static($target);
-    return $transaction->process($request);
-  }
-  
   function process(Request $request) {
     if(isset($this->target['location'])) {
       $location = $this->target['location'];
@@ -79,7 +68,7 @@ class TargetTransaction extends Transaction {
     
     if(is_callable($processor)) {
       return parent::process($request);
-    } else throw new InvalidTargetError("Valid target required");
+    } else throw new \ErrorException("Invalid target or does not exist: Processor comiling failed");
   }
   
   /**
@@ -123,13 +112,13 @@ class TargetTransaction extends Transaction {
         $controller = sprintf($alias, $controller);
       }
       
-      $controller_class = Inflector::pascalize($controller);
+      # pascalize controller => ClassName
+      $controller_class = str_replace(' ', '', ucwords(preg_replace('/(_|-)+/', ' ', $controller)));
     }
     
     if(isset($namespace)) {
       $controller_class = "$namespace\\$controller_class";
     }
-    
     
     $processor = "$controller_class::handle_transaction";
     

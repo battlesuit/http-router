@@ -1,17 +1,17 @@
 <?php
-namespace http;
-use Inflector;
+namespace http\route;
+use http\Request;
 
 /**
- * Route class
+ * Route object class
  *
  * PHP Version 5.3+
  * @author Thomas Monzel <tm@apparat-hamburg.de>
  * @version $Revision$
- * @package Suitcase
- * @subpackage Router
+ * @package Battlesuit
+ * @subpackage http-router
  */
-class Route extends Object {
+class Object {
   
   /**
    * Http method for acception
@@ -137,7 +137,7 @@ class Route extends Object {
    * @access public
    * @return string
    */
-  function to_string() {
+  function __toString() {
     $pattern = $this->pattern;
     
     if(!empty($this->requirements)) {

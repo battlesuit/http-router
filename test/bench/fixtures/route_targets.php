@@ -16,25 +16,25 @@ namespace {
     return $request->data['_action'];
   }
   
-  class Users extends http\TransactionController {
+  class Users extends http\transaction\Controller {
     function process_transaction(http\Request $request) {
       echo $request->data['_action'];
     }
   }
   
-  class Products extends http\TransactionController {
+  class Products extends http\transaction\Controller {
     function process_transaction(http\Request $request) {
       //echo $request->data['_action'];
     }
   }
   
-  class Tests extends http\TransactionController {
+  class Tests extends http\transaction\Controller {
     function process_transaction(http\Request $request) {
       //echo $request->data['_action'];
     }
   }
   
-  class Invoices extends http\TransactionController {
+  class Invoices extends http\transaction\Controller {
     function process_transaction(http\Request $request) {
       //echo $request->data['_action'];
     }

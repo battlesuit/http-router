@@ -9,10 +9,10 @@ use http\route\Scope as RouteScope;
  * PHP Version 5.3+
  * @author Thomas Monzel <tm@apparat-hamburg.de>
  * @version $Revision$
- * @package Suitcase
- * @subpackage Router
+ * @package Battlesuit
+ * @subpackage http-router
  */
-class Router extends Object {
+class Router {
   
   /**
    * Collection of all routes
@@ -62,7 +62,7 @@ class Router extends Object {
    */
   function route_request(Request $request) {    
     if($this->accept_route($request, $route)) {
-      return TargetTransaction::handle($route->target, $request);
+      return transaction\Target::run($route->target, $request);
     }
     
     return new Response(404, "No routes matched ".strtoupper($request->method())." ".$request->resource_path());

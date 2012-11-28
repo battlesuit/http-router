@@ -1,23 +1,24 @@
 <?php
-namespace http;
+namespace http\transaction;
+use http\Request;
 
 /**
- * Topmost transaction evaluation class
+ * Topmost transaction evaluation controller
  *
  * PHP Version 5.3+
  * @author Thomas Monzel <tm@apparat-hamburg.de>
  * @version $Revision$
- * @package Suitcase
- * @subpackage Net
+ * @package Battlesuit
+ * @subpackage http-router
  */
-abstract class TransactionController extends Object {
+abstract class Controller {
   
   /**
    * Invoke as transaction application
    *
    * @access public
    * @param Request $request
-   * @return Response $response
+   * @return Response
    */
   function __invoke(Request $request) {
     return $this->process_transaction($request);
@@ -29,10 +30,10 @@ abstract class TransactionController extends Object {
    * @static
    * @access public
    * @param Request $request
-   * @return Response $response
+   * @return Base
    */
   static function handle_transaction(Request $request) {
-    return Transaction::handle(array(new static(), 'process_transaction'), $request);
+    return Base::run(array(new static(), 'process_transaction'), $request)->response();
   }
   
   /**
@@ -40,7 +41,7 @@ abstract class TransactionController extends Object {
    *
    * @access public
    * @param Request $request
-   * @return Response $response
+   * @return Response
    */
   abstract function process_transaction(Request $request);
 }

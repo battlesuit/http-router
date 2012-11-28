@@ -1,5 +1,7 @@
 <?php
 namespace {
+  use http\action\Controller as ActionController;
+  
   class UnderscoredControllerName extends ActionController {
     
   }
@@ -44,8 +46,8 @@ namespace {
   }
   
   class BeforeAndAfterActionViaDelegationExcept extends ActionController {
-    public $before_action = ['custom_before_action', 'except' => 'trigger'];
-    public $after_action = ['custom_after_action', 'except' => ['trigger', 'activate']];
+    public $before_action = array('custom_before_action', 'except' => 'trigger');
+    public $after_action = array('custom_after_action', 'except' => array('trigger', 'activate'));
     
     protected function custom_before_action() {
       $this->response->body('before');
@@ -85,19 +87,19 @@ namespace {
   class RespondingController extends ActionController {
     function index() {
       return $this->respond_to('xml', function() {
-        return new http\Response(200, "<data></data>", ['content_type' => 'text/xml']);
+        return new http\Response(200, "<data></data>", array('content_type' => 'text/xml'));
       });
     }
     
     function respond_many() {
-      return $this->respond_to([
+      return $this->respond_to(array(
         'xml' => function() {
-          return new http\Response(200, "<nodes></nodes>", ['content_type' => 'text/xml']);
+          return new http\Response(200, "<nodes></nodes>", array('content_type' => 'text/xml'));
         },
         'js' => function() {
-          return new http\Response(200, "function alertSomehting() { alert('something'); }", ['content_type' => 'text/javascript']);
+          return new http\Response(200, "function alertSomehting() { alert('something'); }", array('content_type' => 'text/javascript'));
         }
-      ]);
+      ));
     }
   }
 }

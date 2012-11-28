@@ -1,6 +1,6 @@
 <?php
-namespace bs {
+namespace {
   autoload_in('http', dirname(__DIR__)."/lib/http");
-  import('http', 'inflector');
+  import('http', 'str-inflections');
 }
 ?>

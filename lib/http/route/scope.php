@@ -1,8 +1,6 @@
 <?php
 namespace http\route;
-use Inflector;
-use http\Object;
-use http\Route;
+use str;
 
 /**
  * Compositional route-scoper class
@@ -10,10 +8,10 @@ use http\Route;
  * PHP Version 5.3+
  * @author Thomas Monzel <tm@apparat-hamburg.de>
  * @version $Revision$
- * @package Suitcase
- * @subpackage Router
+ * @package Battlesuit
+ * @subpackage http-router
  */
-class Scope extends Object {
+class Scope {
   
   /**
    * Route collection
@@ -184,11 +182,11 @@ class Scope extends Object {
       }
       
       if($member and $controller) {
-        $inflected_name = Inflector::singularize($controller);
+        $inflected_name = str\singularize($controller);
         $parent_path .= "/&{$inflected_name}_id";
         $this->requirements[$inflected_name."_id"] = '/\d+/';
       } elseif($parent->is_member()) {
-        $inflected_name = Inflector::singularize($parent->parent()->local('controller'));
+        $inflected_name = str\singularize($parent->parent()->local('controller'));
         $parent_path .= "/&{$inflected_name}_id";
         $this->requirements[$inflected_name."_id"] = '/\d+/';
       }
@@ -264,7 +262,7 @@ class Scope extends Object {
    * @return Route
    */
   function push_route($method, $pattern, array $target = array(), array $requirements = array()) {
-    $route = new Route($method, $pattern, $target, array_merge($this->requirements, $requirements));
+    $route = new Object($method, $pattern, $target, array_merge($this->requirements, $requirements));
     $this->routes->push($route);
     return $route;
   }
@@ -529,8 +527,8 @@ class Scope extends Object {
     return $this->routes->to_array();
   }
   
-  function to_string() {
-    return $this->routes->to_string();
+  function __toString() {
+    return "$this->routes";
   }
   
   /**

@@ -1,7 +1,8 @@
 <?php
-namespace http;
+namespace http\transaction;
+use http\ConcreteControllerMock;
 
-class TransactionControllerTest extends TestCase {
+class ControllerTest extends \http\TestCase {
   function set_up() {
     $this->load_mocks('concrete_controller');
     $this->controller = new ConcreteControllerMock();

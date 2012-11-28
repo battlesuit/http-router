@@ -1,7 +1,5 @@
 <?php
 namespace http\route;
-use http\Object;
-use http\Route;
 use http\Request;
 
 /**
@@ -11,10 +9,10 @@ use http\Request;
  * PHP Version 5.3+
  * @author Thomas Monzel <tm@apparat-hamburg.de>
  * @version $Revision$
- * @package Suitcase
- * @subpackage Router
+ * @package Battlesuit
+ * @subpackage http-router
  */
-class Acceptor extends Object {
+class Acceptor {
   
   /**
    * Conditions to accept
@@ -39,10 +37,10 @@ class Acceptor extends Object {
    *
    * @static
    * @access public
-   * @param Route $route
+   * @param Object $route
    * @param array $acceptables
    */
-  static function accept_route(Route $route, Request $request) {
+  static function accept_route(Object $route, Request $request) {
     $class = get_called_class();
     if(isset(self::$acceptors[$class])) goto acception;
     
@@ -57,10 +55,10 @@ class Acceptor extends Object {
    * Tests route against the request by iterating through all accept_* methods
    *
    * @access public
-   * @param Route $route
+   * @param Object $route
    * @return boolean
    */
-  function accept(Route $route, Request $request) {   
+  function accept(Object $route, Request $request) {   
     foreach($this->conditions as $condition) {
       if(!call_user_func(array($this, "accept_$condition"), $route, $request)) return false;
     }
@@ -72,10 +70,11 @@ class Acceptor extends Object {
    * Compares the request method against the route method condition
    *
    * @access protected
-   * @param string $method
+   * @param Object $route
+   * @param Request $request;
    * @return boolean
    */
-  protected function accept_method($route, $request) {
+  protected function accept_method(Object $route, Request $request) {
     return $route->method() === $request->method();
   }
   
@@ -83,11 +82,11 @@ class Acceptor extends Object {
    * Compares the requests path_info against the route path condition
    *
    * @access protected
-   * @param string $path
-   * @param Route $route
+   * @param Object $route
+   * @param Request $request
    * @return boolean
    */
-  protected function accept_pattern($route, $request) {
+  protected function accept_pattern(Object $route, Request $request) {
     $path = $request->resource_path();
     
     if(strlen($path) > 0) {

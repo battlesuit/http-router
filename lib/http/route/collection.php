@@ -1,7 +1,5 @@
 <?php
 namespace http\route;
-use http\Object;
-use http\Route;
 use http\Request;
 
 /**
@@ -11,10 +9,10 @@ use http\Request;
  * PHP Version 5.3+
  * @author Thomas Monzel <tm@apparat-hamburg.de>
  * @version $Revision$
- * @package Suitcase
- * @subpackage Router
+ * @package Battlesuit
+ * @subpackage http-router
  */
-class Collection extends Object implements \ArrayAccess, \Iterator, \Countable {
+class Collection implements \ArrayAccess, \Iterator, \Countable {
   
   /**
    * Route stack containing all applied route instances
@@ -37,10 +35,10 @@ class Collection extends Object implements \ArrayAccess, \Iterator, \Countable {
    * Pushing a route to the stack
    *
    * @access public
-   * @param Route $route
+   * @param Object $route
    * @return int
    */
-  function push(Route $route) {
+  function push(Object $route) {
     $count = array_push($this->stack, $route);
     $path_length = substr_count($route->pattern(), '/');
     $this->sorted_indexes[$route->method()][$path_length][] = $count-1;
@@ -141,9 +139,9 @@ class Collection extends Object implements \ArrayAccess, \Iterator, \Countable {
    * @access public
    * @return string
    */
-  function to_string() {
+  function __toString() {
     $routes = '';
-    foreach($this as $route) $routes .= $route->to_string()."\n";
+    foreach($this as $route) $routes .= "$route\n";
     return $routes;
   }
  

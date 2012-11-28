@@ -1,24 +1,26 @@
 <?php
-namespace http;
+namespace http\transaction;
 use http\route\Acceptor as RouteAcceptor;
+use http\Request;
+use http\route\Object as Route;
 
-class TargetTransactionTest extends TestCase {
+class TargetTest extends \http\TestCase {
   function set_up() {
     $this->load_fixtures('route_targets');
   }
   
   function test_construction_with_string() {
-    $action = new TargetTransaction('application#index');
+    $action = new Target('application#index');
     $this->assert_eq($action->targets_to(), 'application#index');
   }
   
   function test_construction_with_array() {
-    $action = new TargetTransaction(array('to' => 'users#show'));
+    $action = new Target(array('to' => 'users#show'));
     $this->assert_eq($action->targets_to(), 'users#show');
   }
   
   function test_request_process_with_closure() {
-    $action = new TargetTransaction(function($request) {
+    $action = new Target(function($request) {
       
     });
     
@@ -26,37 +28,37 @@ class TargetTransactionTest extends TestCase {
   }
     
   function test_to_with_closure() {
-    $action = new TargetTransaction(array('to' => function() {}));
+    $action = new Target(array('to' => function() {}));
     $this->assert_instanceof($action->compile(new Request()), '\Closure');
   }
   
   function test_to_with_function() {
-    $action = new TargetTransaction(array('to' => 'all_users'));
+    $action = new Target(array('to' => 'all_users'));
     $this->assert_eq($action->compile(new Request()), 'all_users');
   }
   
   function test_to_with_namespaced_function() {
-    $action = new TargetTransaction(array('to' => 'users\accounts\create'));
+    $action = new Target(array('to' => 'users\accounts\create'));
     $this->assert_eq($action->compile(new Request()), 'users\accounts\create');
   }
   
   function test_to_with_function_and_target_namespace() {
-    $action = new TargetTransaction(array('to' => 'all', 'namespace' => 'users'));
+    $action = new Target(array('to' => 'all', 'namespace' => 'users'));
     $this->assert_eq($action->compile(new Request()), 'users\all');
   }
   
   function test_target_with_controller() {
-    $action = new TargetTransaction(array('controller' => 'users'));
+    $action = new Target(array('controller' => 'users'));
     $this->assert_eq($action->compile(new Request()), 'Users::handle_transaction');
   }
   
   function test_target_with_controller_and_namespace() {
-    $action = new TargetTransaction(array('controller' => 'accounts', 'namespace' => 'users'));
+    $action = new Target(array('controller' => 'accounts', 'namespace' => 'users'));
     $this->assert_eq($action->compile(new Request()), 'users\Accounts::handle_transaction');
   }
   
   function test_to_with_controller_action_shortcut() {
-    $action = new TargetTransaction(array('to' => 'users#index'));
+    $action = new Target(array('to' => 'users#index'));
     $request = new Request();
     $action->compile($request, $processor);
     
@@ -65,7 +67,7 @@ class TargetTransactionTest extends TestCase {
   }
   
   function test_to_with_namespaced_controller_action_shortcut() {
-    $action = new TargetTransaction(array('to' => 'users.accounts#index'));
+    $action = new Target(array('to' => 'users.accounts#index'));
     $request = new Request();
     $action->compile($request, $processor);
     
@@ -74,7 +76,7 @@ class TargetTransactionTest extends TestCase {
   }
   
   function test_to_with_target_alias() {
-    $action = new TargetTransaction(array('to' => 'users.accounts#create', 'alias' => '%s_controller'));
+    $action = new Target(array('to' => 'users.accounts#create', 'alias' => '%s_controller'));
     $request = new Request();
     $action->compile($request, $processor);
 
@@ -84,25 +86,25 @@ class TargetTransactionTest extends TestCase {
   }
   
   function test_transaction_with_global_function() {
-    $action = new TargetTransaction('show_user');
+    $action = new Target('show_user');
     $response = $action(new Request());
     $this->assert_eq("$response", '@user');
   }
   
   function test_transaction_with_controller_action() {
-    $action = new TargetTransaction('users#index');
+    $action = new Target('users#index');
     $response = $action(new Request('get', 'http://example.de'));
     $this->assert_eq("$response", 'index');
   }
   
   function test_transaction_with_action_param() {
-    $action = new TargetTransaction('return_action');
+    $action = new Target('return_action');
     $response = $action(new Request('get', 'http://example.de?_action=test'));
     $this->assert_eq("$response", 'test');
   }
   
   function test_route_acception_with_action_path_param() {
-    $action = new TargetTransaction('return_action');
+    $action = new Target('return_action');
     $request = new Request('get', 'http://example.de/hello/world');
     
     RouteAcceptor::accept_route(new Route('get', '/hello/&action'), $request);
@@ -112,11 +114,11 @@ class TargetTransactionTest extends TestCase {
   }
   
   function test_autoload() {
-    TargetTransaction::unregister_autoloaders();
+    Target::unregister_autoloaders();
     
     $request = new Request('get', 'http://domain.foo/index.php/foo/bar');
     
-    $action = new TargetTransaction(array('to' => 'accounts#create', 'load_dir' => $this->bench_dir(), 'namespace' => 'controllers\admin', 'alias' => '%s_controller'));
+    $action = new Target(array('to' => 'accounts#create', 'load_dir' => $this->bench_dir(), 'namespace' => 'controllers\admin', 'alias' => '%s_controller'));
     $response = $action->process($request);
     $this->assert_eq("$response", "Account created");
   }
