@@ -1,8 +1,11 @@
 bs.http-router
 ==============
 
-Easy routing http requests to callbacks. This bundle also requires `http` and `str-inflections` to work.  
+Compositional routing of http requests => callbacks.  
 Run tests under `test/run.php` (91/91 completed, 182 passes)
+
+###Dependencies
+This bundle also requires `http` and `str-inflections` to work.
 
 ###Drawing the compositional routemap
 The tool for this purpose is `http\route\Scope`.  
