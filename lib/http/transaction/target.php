@@ -21,7 +21,7 @@ class Target extends Base {
    * @param mixed $target
    */
   function __construct($target) {
-    if(!is_array($target)) $target = array('to' => $target);
+    if(!is_array($target) or is_callable($target)) $target = array('to' => $target);
     $this->target = $target;
   }
   
@@ -87,7 +87,7 @@ class Target extends Base {
       else $processor = $to;
       
       if(is_callable($processor)) {    
-        goto fin;
+        goto end;
       } elseif(strpos($to, '#') !== false) {
         
         # short callback
@@ -103,7 +103,7 @@ class Target extends Base {
     } elseif(is_callable($to)) {
       # closure callback
       $processor = $to;
-      goto fin;
+      goto end;
     }
     
     $controller_class = null;
@@ -127,7 +127,7 @@ class Target extends Base {
       class_exists($processor, true);
     }
     
-    fin:
+    end:
     if(!empty($action)) $request->data['_action'] = $action;
     return $this->processor = $processor;
   }
