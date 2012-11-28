@@ -91,7 +91,7 @@ class TargetTest extends \http\TestCase {
     $this->assert_eq("$response", '@user');
   }
   
-  function test_transaction_with_controller_action() {
+  /*function test_transaction_with_controller_action() {
     $action = new Target('users#index');
     $response = $action(new Request('get', 'http://example.de'));
     $this->assert_eq("$response", 'index');
@@ -121,6 +121,6 @@ class TargetTest extends \http\TestCase {
     $action = new Target(array('to' => 'accounts#create', 'load_dir' => $this->bench_dir(), 'namespace' => 'controllers\admin', 'alias' => '%s_controller'));
     $response = $action->process($request);
     $this->assert_eq("$response", "Account created");
-  }
+  }*/
 }
 ?>

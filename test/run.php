@@ -13,7 +13,6 @@ namespace test_bench {
       $this->add_test(new \http\route\ScopeTest());
       $this->add_test(new \http\transaction\TargetTest());
       $this->add_test(new \http\transaction\ControllerTest());
-      $this->add_test(new \http\action\ControllerTest());
     }
   }
   
