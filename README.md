@@ -94,6 +94,7 @@ Now we want to find out which route matches the request
         # we got a accepted route
         # lets dump the target
         var_dump($accepted_route->target);
+        exit;
       }
       
       echo "No routes accepted";
