@@ -54,7 +54,8 @@ class Router {
   }
 
   /**
-   * Route transaction
+   * Runs a route transaction if a route was accepted
+   * otherwise it will return a 404 response
    * 
    * @access public
    * @param Request $request
@@ -62,7 +63,7 @@ class Router {
    */
   function route_request(Request $request) {    
     if($this->accept_route($request, $route)) {
-      return transaction\Target::run($route->target, $request);
+      return transaction\Target::run($route->target, $request)->response();
     }
     
     return new Response(404, "No routes matched ".strtoupper($request->method())." ".$request->resource_path());
@@ -73,6 +74,7 @@ class Router {
    *
    * @access public
    * @param mixed $locals
+   * @param callable $block
    */
   function draw_routes($locals, $block = null) {
     if(is_callable($locals)) {

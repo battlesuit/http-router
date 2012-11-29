@@ -1,6 +1,7 @@
 <?php
 namespace http\transaction;
 use http\ConcreteControllerMock;
+use http\Request;
 
 class ControllerTest extends \http\TestCase {
   function set_up() {

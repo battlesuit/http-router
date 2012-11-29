@@ -65,7 +65,7 @@ class ScopeTest extends TestCase {
   
   function test_match() {
     $this->scope->match('/foo/bar', 'bla');
-    $this->assert_accept(new Request('get', 'http://bla.de/foo/bar'), $route);
+    $this->assert_accept(new Request('http://bla.de/foo/bar'), $route);
     $this->assert_eq($route->target['to'], 'bla');
   }
   
@@ -77,25 +77,25 @@ class ScopeTest extends TestCase {
   function test_match_via() {
     $this->scope->match(array('path' => '/users/&id', 'via' => 'post'), 'callback');
     
-    $this->assert_accept(new Request('post', 'http://example.de/users/12'));
+    $this->assert_accept(new Request('http://example.de/users/12', 'post'));
 
     $this->scope->match(array('/projects/&id', array('post', 'delete')), 'callback');
-    $this->assert_accept(new Request('delete', 'http://example.de/projects/12'));
-    $this->assert_accept(new Request('post', 'http://example.de/projects/12'));
+    $this->assert_accept(new Request('http://example.de/projects/12', 'delete'));
+    $this->assert_accept(new Request('http://example.de/projects/12', 'post'));
   }
   
   function test_via_helpers() {
     $this->scope->get('/users', 'users#index');
-    $this->assert_accept(new Request('get', 'http://example.de/users'));
+    $this->assert_accept(new Request('http://example.de/users'));
     
     $this->scope->post('/accounts', array('controller' => 'accounts', 'action' => 'create'));
-    $this->assert_accept(new Request('post', 'http://example.de/accounts'));
+    $this->assert_accept(new Request('http://example.de/accounts', 'post'));
     
     $this->scope->delete('/users/&id', 'users#destroy');
-    $this->assert_accept(new Request('delete', 'http://example.de/users/12'));
+    $this->assert_accept(new Request('http://example.de/users/12', 'delete'));
     
     $this->scope->put('/users/&id/edit', 'users#update');
-    $this->assert_accept(new Request('put', 'http://example.de/users/12/edit'));
+    $this->assert_accept(new Request('http://example.de/users/12/edit', 'put'));
   }
   
   function test_match_controller_via_array() {
@@ -124,7 +124,7 @@ class ScopeTest extends TestCase {
       $inner->get('/bar/&param', 'hello_world');
     });
     
-    $request = new Request('get', 'http://example.de/foo/bar/my_param');
+    $request = new Request('http://example.de/foo/bar/my_param');
     $this->assert_accept_and_dispatch($request);
     
     $this->assert_key_exists('_param', $request->data);
@@ -137,11 +137,11 @@ class ScopeTest extends TestCase {
       $products->post('/add', array('action' => 'create'));
     });
     
-    $request = new Request('post', 'http://example.de/products/add');
+    $request = new Request('http://example.de/products/add', 'post');
     $this->assert_accept_and_dispatch($request);
     $this->assert_equality($request->data['_action'], 'create');
     
-    $request = new Request('get', 'http://example.de/products/add');
+    $request = new Request('http://example.de/products/add');
     $this->assert_accept_and_dispatch($request);
     $this->assert_equality($request->data['_action'], 'index');
   }
@@ -151,14 +151,14 @@ class ScopeTest extends TestCase {
       $users->put('/update_all', 'users#update_all_users');
     });
     
-    $this->assert_no_match(new Request('post', 'http://example.de/users/update_all')); 
-    $this->assert_accept(new Request('put', 'http://example.de/users/update_all'));
-    $this->assert_accept(new Request('get', 'http://example.de/users'));
+    $this->assert_no_match(new Request('http://example.de/users/update_all', 'post')); 
+    $this->assert_accept(new Request('http://example.de/users/update_all', 'put'));
+    $this->assert_accept(new Request('http://example.de/users'));
   }
   
   function test_many_resources() {
     $this->scope->resources('users', 'products', 'fruits');
-    $this->assert_accept(new Request('get', 'http://example.de/fruits/23/edit'));
+    $this->assert_accept(new Request('http://example.de/fruits/23/edit'));
   }
   
   function test_many_nested_resources() {
@@ -170,14 +170,14 @@ class ScopeTest extends TestCase {
       });
     });
     
-    $request = new Request('get', 'http://example.de/de/foo/bar-nested/tests');
+    $request = new Request('http://example.de/de/foo/bar-nested/tests');
     $this->assert_accept_and_dispatch($request);
     
     $this->assert_equality($request->data['_action'], 'index');
     $this->assert_equality($request->data['_locale'], 'de');
     
-    $this->assert_no_match(new Request('get', 'http://example.de/de/foo/bar-nested/update_all'));
-    $this->assert_accept(new Request('put', 'http://example.de/de/foo/bar-nested/update_all'));
+    $this->assert_no_match(new Request('http://example.de/de/foo/bar-nested/update_all'));
+    $this->assert_accept(new Request('http://example.de/de/foo/bar-nested/update_all', 'put'));
   }
   
   function test_under() {
@@ -185,7 +185,7 @@ class ScopeTest extends TestCase {
       $scope->get('/foo', 'create');
     });
     
-    $this->assert_accept_and_dispatch(new Request('get', 'http://example.de/tom/foo'), $action);
+    $this->assert_accept_and_dispatch(new Request('http://example.de/tom/foo'), $action);
     
     
     $target = $action->target();
@@ -200,8 +200,8 @@ class ScopeTest extends TestCase {
       });
     });
     
-    $this->assert_accept(new Request('post', '/users/23/action'));
-    $this->assert_no_match(new Request('post', '/aa/action'));
+    $this->assert_accept(new Request('/users/23/action', 'post'));
+    $this->assert_no_match(new Request('/aa/action', 'post'));
   }
   
   function test_nested_member_controllers() {
@@ -215,7 +215,7 @@ class ScopeTest extends TestCase {
       });
     });
     
-    $request = new Request('get', 'http://example.de/tom/foo/index.php/clients/15/invoices/23/nested/path');
+    $request = new Request('http://example.de/tom/foo/index.php/clients/15/invoices/23/nested/path');
     $this->assert_accept_and_dispatch($request, $delegator);
     $this->assert_eq($request->data['_client_id'], '15');
     $this->assert_eq($request->data['_id'], '23');

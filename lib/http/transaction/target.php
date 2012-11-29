@@ -2,6 +2,23 @@
 namespace http\transaction;
 use http\Request;
 
+/**
+ * Compiles the given data to a callable transaction processor
+ *
+ * Example
+ *  $r = new Request('get', 'http://localhost/path/to/resource');
+ * 
+ *  $t = new Target('users#index');
+ *  $t->compile($r, $processor);
+ *
+ *  $processor($r); # => http\Response instance
+ *
+ * PHP Version 5.3+
+ * @author Thomas Monzel <tm@apparat-hamburg.de>
+ * @version $Revision$
+ * @package Battlesuit
+ * @subpackage http-router
+ */
 class Target extends Base {
   
   private static $autoloaders = array();
@@ -52,7 +69,6 @@ class Target extends Base {
         if(strpos($name, '_') === 0) {
           $name = substr($name, 1);
           $location = str_replace("&$name", $value, $location);
-             
         }
       }
       
@@ -119,7 +135,7 @@ class Target extends Base {
     if(isset($namespace)) {
       $controller_class = "$namespace\\$controller_class";
     }
-    
+
     $processor = "$controller_class::handle_transaction";
     
     if(!empty($load_dir)) {

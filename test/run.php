@@ -4,6 +4,7 @@ namespace test_bench {
   set_include_path(get_include_path() . PATH_SEPARATOR . __DIR__);
   
   autoload_in('http', __DIR__."/http");
+  autoload_in('server', __DIR__."/server");
   
   class PackageTestBench extends Base {
     function initialize() {
@@ -13,6 +14,9 @@ namespace test_bench {
       $this->add_test(new \http\route\ScopeTest());
       $this->add_test(new \http\transaction\TargetTest());
       $this->add_test(new \http\transaction\ControllerTest());
+      
+      # server tests
+      $this->add_test(new \server\RouteScopingTest());
     }
   }
   

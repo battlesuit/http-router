@@ -17,7 +17,7 @@ This bundle also requires `http` and `str-inflections` to work.
         
         $domain('/&locale', function($locale) {
         
-          # route "/(de|en..)/products(/&id)" to 'products#(index|show|edit|add|create|destroy)'
+          # route "/(de|en..)/products(/&id(/edit))" to 'products#(index|show|edit|add|create|destroy)'
           $locale->resource('products');
         });
         
@@ -87,7 +87,7 @@ Now we want to find out which route matches the request
       $routes = $scope->routes();
       
       # accept
-      $accepted_route = $routes->accept(new Request('post', '/de/products'));
+      $accepted_route = $routes->accept(new Request('post', 'http://localhost/de/products'));
       
       # test acception
       if($accepted_route !== false) {
@@ -118,7 +118,7 @@ The route target compiles the given informations to a callable processor
       $t = new Target('path\to\user_defined_function');
       
       # our request
-      $r = new Request('get', '/have/a/beer');
+      $r = new Request('get', 'http://localhost//have/a/beer');
       
       # compiling it
       $t->compile($r, $processor);

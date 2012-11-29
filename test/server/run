@@ -1,0 +1,1 @@
+cmd.exe /c 'start /min httpd -f %cd%\httpd.conf'
