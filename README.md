@@ -87,7 +87,7 @@ Now we want to find out which route matches the request
       $routes = $scope->routes();
       
       # accept
-      $accepted_route = $routes->accept(new Request('post', 'http://localhost/de/products'));
+      $accepted_route = $routes->accept(new Request('http://localhost/de/products', 'post'));
       
       # test acception
       if($accepted_route !== false) {
@@ -118,7 +118,7 @@ The route target compiles the given informations to a callable processor
       $t = new Target('path\to\user_defined_function');
       
       # our request
-      $r = new Request('get', 'http://localhost//have/a/beer');
+      $r = new Request('http://localhost//have/a/beer');
       
       # compiling it
       $t->compile($r, $processor);

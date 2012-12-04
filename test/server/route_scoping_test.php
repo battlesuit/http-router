@@ -1,33 +1,36 @@
 <?php
 namespace server;
+use http\Connection;
 
 class RouteScopingTest extends \test_case\Unit {
-  public $script = 'http://localhost/route_scoping.php';
+  function set_up() {
+    $this->con = new Connection('localhost');
+  }
   
-  function get_url($url) {
-    return array(get_headers($url, 1), file_get_contents($url));
+  function tear_down() {
+    $this->con->close();
   }
   
   function test_not_found() {
-    $headers = get_headers($this->script . "/path/to/nowhere", 1);
-    $this->assert_eq($headers[0], 'HTTP/1.1 404 Not Found');
+    $response = $this->con->get("/route_scoping.php/path/to/nowhere");
+    $this->assert_eq($response->status_line(), 'HTTP/1.1 404 Not Found');
   }
   
   function test_invalid_target() {
-    $headers = get_headers($this->script . "/path/to/resource", 1);
-    $this->assert_eq($headers[0], 'HTTP/1.1 500 Internal Server Error');
+    $response = $this->con->get("/route_scoping.php/path/to/resource");
+    $this->assert_eq($response->status_line(), 'HTTP/1.1 500 Internal Server Error');
   }
   
   function test_root_call() {
-    $info = $this->get_url($this->script);
-    $this->assert_eq($info[0][0], 'HTTP/1.1 200 OK');
-    $this->assert_eq($info[1], 'Action: home');
+    $response = $this->con->get("/route_scoping.php");
+    $this->assert_eq($response->status_line(), 'HTTP/1.1 200 OK');
+    $this->assert_eq($response->flat_body(), 'Action: home');
   }
   
   function test_locale_products_call() {
-    $info = $this->get_url($this->script . "/de/products/12");
-    $this->assert_eq($info[0][0], 'HTTP/1.1 200 OK');
-    $this->assert_eq($info[1], 'Showing one product with id: 12');
+    $response = $this->con->get("/route_scoping.php/de/products/12");
+    $this->assert_eq($response->status_line(), 'HTTP/1.1 200 OK');
+    $this->assert_eq($response->flat_body(), 'Showing one product with id: 12');
   }
 
 }

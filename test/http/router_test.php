@@ -18,14 +18,14 @@ class RouterTest extends TestCase {
       });
     });
     
-    $request = new Request('get', 'http://domain.de/foo');
+    $request = new Request('http://domain.de/foo');
     
-    $accepted = $this->router->accept_request($request, $target);
+    $accepted = $this->router->accept_route($request);
     $this->assert_true($accepted);
     
-    $request = new Request('get', 'http://domain.de/foo/test.php/foo');
+    $request = new Request('http://domain.de/foo/test.php/foo');
     
-    $accepted = $this->router->accept_request($request, $target);
+    $accepted = $this->router->accept_route($request);
     $this->assert_true($accepted);
   }
   
@@ -35,9 +35,9 @@ class RouterTest extends TestCase {
     });
     
     
-    $request = new Request('get', 'http://domain.de/fo');
+    $request = new Request('http://domain.de/fo');
     
-    $accepted = $this->router->accept_request($request);
+    $accepted = $this->router->accept_route($request);
     $this->assert_false($accepted);
   }
   
@@ -46,13 +46,11 @@ class RouterTest extends TestCase {
       $root->match(array('/foo/bar/&my_param', 'get'), array('to' => 'hello_world'), array('my_param' => '/\d+/'));
     });
     
-    
-    
-    $request = new Request('get', 'http://domain.de/foo/index.php/foo/bar/12');
-    $accepted = $this->router->accept_request($request, $target);
+    $request = new Request('http://domain.de/foo/index.php/foo/bar/12');
+    $accepted = $this->router->accept_route($request, $route);
     $this->assert_true($accepted);
-    
-    $this->assert_equality($target['path_params']['my_param'], '12');
+
+    $this->assert_equality($request->data['_my_param'], '12');
   }
 }
 ?>
