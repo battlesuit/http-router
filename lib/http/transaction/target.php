@@ -6,7 +6,7 @@ use http\Request;
  * Compiles the given data to a callable transaction processor
  *
  * Example
- *  $r = new Request('get', 'http://localhost/path/to/resource');
+ *  $r = new Request('http://localhost/path/to/resource');
  * 
  *  $t = new Target('users#index');
  *  $t->compile($r, $processor);
@@ -19,9 +19,7 @@ use http\Request;
  * @package Battlesuit
  * @subpackage http-router
  */
-class Target extends Base {
-  
-  private static $autoloaders = array();
+class Target extends Application {
   
   /**
    * Target components to dispatch
@@ -53,15 +51,21 @@ class Target extends Base {
   }
   
   /**
-   * Where does the journey goes?
-   *
-   * @access public
-   * @return mixed
+   * Returns the 
+   * 
    */
-  function targets_to() {
+  function to() {
     return $this->target['to'];
   }
   
+  /**
+   * Processes the request and generates a response
+   * If the target has a location attribute a redirect is initialized
+   *
+   * @access public
+   * @param Request $request
+   * @return Response
+   */
   function process(Request $request) {
     if(isset($this->target['location'])) {
       $location = $this->target['location'];
@@ -84,15 +88,16 @@ class Target extends Base {
     
     if(is_callable($processor)) {
       return parent::process($request);
-    } else throw new \ErrorException("Invalid target or does not exist: Processor comiling failed");
+    } else throw new \ErrorException("Invalid target or target does not exist");
   }
   
   /**
-   * 
+   * Compiles the request and returns a processor callable
    *
    * @access public
    * @param Request $request
-   * @return Response
+   * @param callable &$processor
+   * @return callable
    */
   function compile(Request $request, &$processor = null) {
     $to = $action = $base_dir = null;
@@ -138,35 +143,9 @@ class Target extends Base {
 
     $processor = "$controller_class::handle_transaction";
     
-    if(!empty($load_dir)) {
-      static::register_autoload_for($load_dir); 
-      class_exists($processor, true);
-    }
-    
     end:
     if(!empty($action)) $request->data['_action'] = $action;
     return $this->processor = $processor;
-  }
-  
-  protected static function register_autoload_for($dir) {
-    if(isset(static::$autoloaders[$dir])) return;
-    
-    $loader = function($class) use($dir) {
-      $class_name = preg_replace('/(\p{Ll})(\p{Lu})/', '$1_$2', $class);
-      $file = "$dir/$class_name.php";
-      if(file_exists($file)) require_once $file;     
-    };
-    
-    static::$autoloaders[$dir] = $loader;
-    spl_autoload_register(static::$autoloaders[$dir]);
-  }
-  
-  static function unregister_autoloaders() {
-    $autoloaders = static::$autoloaders;
-    foreach($autoloaders as $dir => $loader) {
-      spl_autoload_unregister($loader);
-      unset(static::$autoloaders[$dir]);
-    }
   }
 }
 ?>

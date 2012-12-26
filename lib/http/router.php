@@ -1,7 +1,9 @@
 <?php
 namespace http;
-use http\route\Collection as RouteCollection;
-use http\route\Scope as RouteScope;
+use http\router\RouteCollection;
+use http\router\Scope;
+if(defined('loader\available')) require __DIR__."/autoload.php";
+require __DIR__."/functions.php";
 
 /**
  * Base routing application
@@ -63,7 +65,13 @@ class Router {
    */
   function route_request(Request $request) {    
     if($this->accept_route($request, $route)) {
-      return transaction\Target::run($route->target, $request)->response();
+      try {
+        $response = transaction\Target::run($route->target, $request)->response();
+      } catch(\ErrorException $e) {
+        return new Response(404, "Routing Error: ".$e->getMessage());
+      }
+      
+      return $response;
     }
     
     return new Response(404, "No routes matched ".strtoupper($request->method())." ".$request->resource_path());
@@ -82,7 +90,7 @@ class Router {
       $locals = array();
     }
     
-    $scope = new RouteScope($locals, $this->routes, $block);
+    $scope = new Scope($locals, $this->routes, $block);
     return $scope->finalize();
   }
   

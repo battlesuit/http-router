@@ -1,14 +1,13 @@
 <?php
-namespace http\route;
-use http\TestCase;
+namespace http\router;
 
-class CollectionTest extends TestCase {
+class RouteCollectionTest extends TestUnit {
   function set_up() {
-    $this->routes = new Collection();
+    $this->routes = new RouteCollection();
   }
   
   function fill_with_routes() {
-    for($num = 1; $num < 11; $num++) $this->routes->push(new Object());
+    for($num = 1; $num < 11; $num++) $this->routes->push(new Route());
   }
   
   function test_count() {
@@ -35,7 +34,7 @@ class CollectionTest extends TestCase {
     $this->assert_null($route);
     
     $route = $this->routes->route_at(9);
-    $this->assert_instanceof($route, 'http\route\Object');
+    $this->assert_instanceof($route, 'http\router\Route');
   }
   
   function test_iteration() {
@@ -43,7 +42,7 @@ class CollectionTest extends TestCase {
     
     $iteration_count = 0;
     foreach($this->routes as $index => $route) {
-      $this->assert_instanceof($route, 'http\route\Object');
+      $this->assert_instanceof($route, 'http\router\Route');
       $iteration_count++;
     }
     
@@ -57,7 +56,7 @@ class CollectionTest extends TestCase {
     $this->assert_true(isset($this->routes[2]));
     $this->assert_false(isset($this->routes[10]));
     
-    $this->assert_instanceof($this->routes[7], 'http\route\Object');
+    $this->assert_instanceof($this->routes[7], 'http\router\Route');
     
     $this->routes[5] = null;
     $this->assert_null($this->routes[5]);

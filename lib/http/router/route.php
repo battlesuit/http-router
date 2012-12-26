@@ -1,5 +1,5 @@
 <?php
-namespace http\route;
+namespace http\router;
 use http\Request;
 
 /**
@@ -11,7 +11,7 @@ use http\Request;
  * @package Battlesuit
  * @subpackage http-router
  */
-class Object {
+class Route {
   
   /**
    * Http method for acception
@@ -57,17 +57,16 @@ class Object {
    * Constructs a new route instance
    *
    * @access public
-   * @param string $method
    * @param string $pattern
+   * @param string $method
    * @param mixed $target
    * @param array $requirements
    */
-  function __construct($method = null, $pattern = null, array $target = array(), array $requirements = array()) {
-    $this->method = !empty($method) ? strtolower($method) : 'get';
-    
+  function __construct($pattern = '/', $method = 'get', array $target = array(), array $requirements = array()) {
     # add leading slash if missing
     $pattern = "/".ltrim($pattern, '/');
     
+    $this->method = strtolower($method);
     $this->target = $target;
     $this->pattern = $pattern;
     $this->requirements = $requirements;
@@ -123,8 +122,8 @@ class Object {
    */
   function to_array() {
     return array(
-      'method' => $this->method,
       'pattern' => $this->pattern,
+      'method' => $this->method,
       'target' => $this->target,
       'requirements' => $this->requirements
     );

@@ -1,10 +1,9 @@
 <?php
-namespace http\route;
+namespace http\router;
 use http\Request;
-use http\TestCase;
 use http\transaction\Target as TargetTransaction;
 
-class ScopeTest extends TestCase {
+class ScopeTest extends TestUnit {
   function accept_route($request, &$route = null) {
     $this->scope->finalize();
     $route = $this->scope->routes()->accept($request);
@@ -45,7 +44,7 @@ class ScopeTest extends TestCase {
     $this->assert_null($scope->parent());
     $this->assert_false($scope->has_parent());
     $this->assert_false($scope->is_member());
-    $this->assert_instanceof($scope->routes(), 'http\route\Collection');
+    $this->assert_instanceof($scope->routes(), 'http\router\RouteCollection');
   }
   
   function test_to_array(){

@@ -1,5 +1,5 @@
 <?php
-namespace http\route;
+namespace http\router;
 use http\Request;
 
 /**
@@ -12,7 +12,7 @@ use http\Request;
  * @package Battlesuit
  * @subpackage http-router
  */
-class Collection implements \ArrayAccess, \Iterator, \Countable {
+class RouteCollection implements \ArrayAccess, \Iterator, \Countable {
   
   /**
    * Route stack containing all applied route instances
@@ -35,10 +35,10 @@ class Collection implements \ArrayAccess, \Iterator, \Countable {
    * Pushing a route to the stack
    *
    * @access public
-   * @param Object $route
+   * @param Route $route
    * @return int
    */
-  function push(Object $route) {
+  function push(Route $route) {
     $count = array_push($this->stack, $route);
     $path_length = substr_count($route->pattern(), '/');
     $this->sorted_indexes[$route->method()][$path_length][] = $count-1;
@@ -62,7 +62,7 @@ class Collection implements \ArrayAccess, \Iterator, \Countable {
    * @param callable $accept_by
    * @return boolean
    */
-  function accept(Request $request, $accept_by = 'http\route\Acceptor::accept_route') {
+  function accept(Request $request, $accept_by = 'http\router\Acceptor::accept_route') {
     $method = $request->method();
     $path_lengths = array();
     

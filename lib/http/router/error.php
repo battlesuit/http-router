@@ -1,6 +1,8 @@
 <?php
+namespace http\router;
+
 /**
- * Initializes the http-router test environment
+ * Router top-level error exception
  *
  * PHP Version 5.3+
  * @author Thomas Monzel <tm@apparat-hamburg.de>
@@ -8,8 +10,7 @@
  * @package Battlesuit
  * @subpackage http-router
  */
-namespace {
-  require __DIR__.'/../../module.php';
-  import('test', 'http-router');
+class Error extends \ErrorException {
+  
 }
 ?>

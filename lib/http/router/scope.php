@@ -1,5 +1,5 @@
 <?php
-namespace http\route;
+namespace http\router;
 use str;
 
 /**
@@ -101,12 +101,12 @@ class Scope {
    *
    * @access public
    * @param array $locals
-   * @param Collection $routes
+   * @param RouteCollection $routes
    * @param callable $block
    */
-  function __construct($locals = array(), Collection $routes = null, $block = null) {
+  function __construct($locals = array(), RouteCollection $routes = null, $block = null) {
     if(!is_array($locals)) $locals = array('path' => $locals);
-    $this->routes = !isset($routes) ? new Collection() : $routes;
+    $this->routes = !isset($routes) ? new RouteCollection() : $routes;
     $this->block = $block;
     $this->locals = $locals;
     
@@ -262,7 +262,7 @@ class Scope {
    * @return Route
    */
   function push_route($method, $pattern, array $target = array(), array $requirements = array()) {
-    $route = new Object($method, $pattern, $target, array_merge($this->requirements, $requirements));
+    $route = new Route($pattern, $method, $target, array_merge($this->requirements, $requirements));
     $this->routes->push($route);
     return $route;
   }

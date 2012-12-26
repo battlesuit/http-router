@@ -1,7 +1,7 @@
 <?php
 namespace http;
 
-class RouterTest extends TestCase {
+class RouterTest extends router\TestUnit {
   function set_up() {
     $this->router = new Router();
   }

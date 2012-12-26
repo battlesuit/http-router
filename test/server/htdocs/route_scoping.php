@@ -1,7 +1,8 @@
 <?php
 namespace http {
-  require __DIR__."/../../../../module.php";
-  import('http-router');
+  require __DIR__."/../../../../loader.php";
+  use loader;
+  loader\load('http-router');
   
   class Application extends transaction\Controller {
     function process_transaction(Request $request) {   

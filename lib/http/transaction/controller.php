@@ -33,7 +33,7 @@ abstract class Controller {
    * @return Response
    */
   static function handle_transaction(Request $request) {
-    return Base::run(array(new static(), 'process_transaction'), $request)->response();
+    return Application::run(array(new static(), 'process_transaction'), $request)->response();
   }
   
   /**

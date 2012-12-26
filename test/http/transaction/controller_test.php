@@ -3,7 +3,7 @@ namespace http\transaction;
 use http\ConcreteControllerMock;
 use http\Request;
 
-class ControllerTest extends \http\TestCase {
+class ControllerTest extends \http\router\TestUnit {
   function set_up() {
     $this->load_mocks('concrete_controller');
     $this->controller = new ConcreteControllerMock();
