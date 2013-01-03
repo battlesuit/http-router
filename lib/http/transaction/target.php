@@ -141,6 +141,8 @@ class Target extends Application {
       $controller_class = "$namespace\\$controller_class";
     }
 
+    if(!class_exists($controller_class, true)) throw new \ErrorException("Controller class does not exist");
+
     $processor = "$controller_class::handle_transaction";
     
     end:
