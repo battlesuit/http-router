@@ -1,6 +1,7 @@
 <?php
 namespace http\transaction;
 use http\Request;
+use http\router\Error;
 
 /**
  * Compiles the given data to a callable transaction processor
@@ -88,7 +89,7 @@ class Target extends Application {
     
     if(is_callable($processor)) {
       return parent::process($request);
-    } else throw new \ErrorException("Invalid target or target does not exist");
+    } else throw new Error("Invalid target or target does not exist");
   }
   
   /**
@@ -141,7 +142,7 @@ class Target extends Application {
       $controller_class = "$namespace\\$controller_class";
     }
 
-    if(!class_exists($controller_class, true)) throw new \ErrorException("Controller class does not exist");
+    if(!class_exists($controller_class, true)) throw new Error("Controller class does not exist");
 
     $processor = "$controller_class::handle_transaction";
     

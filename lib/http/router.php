@@ -67,7 +67,7 @@ class Router {
     if($this->accept_route($request, $route)) {
       try {
         $response = transaction\Target::run($route->target, $request)->response();
-      } catch(\ErrorException $e) {
+      } catch(router\Error $e) {
         return new Response(404, "Routing Error: ".$e->getMessage());
       }
       
