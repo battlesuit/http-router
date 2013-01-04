@@ -63,9 +63,6 @@ class Route {
    * @param array $requirements
    */
   function __construct($pattern = '/', $method = 'get', array $target = array(), array $requirements = array()) {
-    # add leading slash if missing
-    $pattern = "/".ltrim($pattern, '/');
-    
     $this->method = strtolower($method);
     $this->target = $target;
     $this->pattern = $pattern;
